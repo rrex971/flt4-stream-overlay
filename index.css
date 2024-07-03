@@ -1,1 +1,35 @@
-/* use flexbox? */
+@font-face {
+    font-family: "Oduda";
+    src: url(./fonts/Oduda-Bold.otf);
+} 
+
+body {
+    font-family: "Oduda";
+}
+
+ul {
+    list-style: none;
+    max-width: 200px;
+}
+
+#leaderboard {
+    list-style-type: none;
+    padding: 0;
+}
+
+.player{
+    transform: translateY(-2px);
+    transition-property: all;
+    transition: 0.2s ease-in-out;
+    padding: 10px;
+    color: #fb9db6;
+    /*background-color: #f6e8e3;*/
+    background-image: linear-gradient(to right, #f6e8e3ff, #fb9db6aa);
+    border-top: #fff8f6 solid 2px;
+    border-bottom: #d0a493 solid 2px;
+    border-radius: 0px 35px 35px 0px;
+}
+
+.score{
+    color: #975f6e
+}
