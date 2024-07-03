@@ -60,7 +60,7 @@ class PriorityQueue {
     }
 }
 
-let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/websocket/v2");
+let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
 
 socket.onopen = () => {
     console.log("api v2 connected");
@@ -73,21 +73,25 @@ socket.onerror = (error) => {
     console.log("Socket Error: ", error);
 };
 
-
 const leaderboard = new PriorityQueue();
 const playerElements = {};
 const playerScoreElements = {};
+let currentPlayerCount = 0;
+let ready = false;
 
 function initializeLeaderboard(players) {
     const leaderboardElement = document.getElementById('leaderboard');
+    leaderboardElement.innerHTML = '';  
+
+    leaderboard.heap = [];  
     players.forEach(player => {
         leaderboard.insert(player);
         const playerElement = document.createElement('li');
-        const playerScoreElement= document.createElement('div');
+        const playerScoreElement = document.createElement('div');
         playerElement.className = 'player';
-        playerScoreElement.className= 'score';
+        playerScoreElement.className = 'score';
         playerElement.id = `player-${player.name}`;
-        playerScoreElement.id= `player-${player.name}-score`;
+        playerScoreElement.id = `player-${player.name}-score`;
         playerElement.textContent = `${player.name}`;
         playerScoreElement.textContent = `${player.score}`;
         leaderboardElement.appendChild(playerElement);
@@ -111,51 +115,34 @@ function updateLeaderboard() {
     });
 }
 
-function simulateScoreUpdates() {
-    const players = Object.keys(playerElements).map(name => ({
-        name,
-        score: Math.floor(Math.random() * 1000),
-    }));
-
-    players.forEach(player => {
-        leaderboard.updateScore(player.name, player.score);
-    });
-
-    updateLeaderboard();
-}
-
-/*const players = [
-    { name: 'Player 1', score: 0 },
-    { name: 'Player 2', score: 0 },
-    { name: 'Player 3', score: 0 },
-    { name: 'Player 4', score: 0 },
-    { name: 'Player 5', score: 0 }
-];
-initializeLeaderboard(players);
-*/
-/*setInterval(simulateScoreUpdates, 100);*/
-let ready=0;
-
 socket.onmessage = (event) => {
     let data = JSON.parse(event.data);
-    if(!ready){
-        const players = [];
-        let a = 0;
-        for(let client in data.tourney.ipcClients){
-            players.push({name: client.gameplay.name, score: client.gameplay.score, id: a});
-            a++;
-        }
-        initializeLeaderboard(players1);
-        ready=1;
-    }
-    else{
+    const scores = [];
 
-        // TODO: i have no clue how to update the score for each ipcClient
-        /*
-        const players = Object.keys(playerElements).map(name => ({
-            name,
-            score: `data.tourney.ipcClients.${players}`,
-        }));
-        */ 
-    };
-}
+    if (data.tourney && data.tourney.ipcClients) {
+        for (let i = 0; i < 6; i++) {
+            if (data.tourney.ipcClients[i]) {
+                let name = data.tourney.ipcClients[i].gameplay.name;
+                if (!name) continue; 
+
+                let score = data.tourney.ipcClients[i].gameplay.score;
+                if (data.tourney.ipcClients[i].gameplay.mods.str.includes('EZ')) {
+                    score *= 1.75;
+                }
+
+                scores.push({ name: name, score: score });
+            }
+        }
+    }
+
+    if (!ready || scores.length !== currentPlayerCount) {
+        initializeLeaderboard(scores);
+        currentPlayerCount = scores.length;
+        ready = true;
+    } else {
+        scores.forEach(player => {
+            leaderboard.updateScore(player.name, player.score);
+        });
+        updateLeaderboard();
+    }
+};
