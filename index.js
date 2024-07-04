@@ -58,6 +58,18 @@ class PriorityQueue {
     toArray() {
         return [...this.heap].sort((a, b) => b.score - a.score);
     }
+
+    getMin() {
+        if (this.heap.length === 0) return null;
+
+        let minPlayer = this.heap[0];
+        for (let i = 1; i < this.heap.length; i++) {
+            if (this.heap[i].score < minPlayer.score) {
+                minPlayer = this.heap[i];
+            }
+        }
+        return minPlayer;
+    }
 }
 
 let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
@@ -115,6 +127,10 @@ function updateLeaderboard() {
     });
 }
 
+function getMinPlayer() {
+    return leaderboard.getMin();
+}
+
 socket.onmessage = (event) => {
     let data = JSON.parse(event.data);
     const scores = [];
@@ -145,4 +161,13 @@ socket.onmessage = (event) => {
         });
         updateLeaderboard();
     }
+
+    // Simulate end of map for demonstration
+    onMapEnd();
 };
+
+
+function onMapEnd() {
+    const lowestScoringPlayer = getMinPlayer();
+    console.log("Lowest Scoring Player:", lowestScoringPlayer);
+}
