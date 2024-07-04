@@ -136,7 +136,7 @@ socket.onmessage = (event) => {
     const scores = [];
 
     if (data.tourney && data.tourney.ipcClients) {
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             if (data.tourney.ipcClients[i]) {
                 let name = data.tourney.ipcClients[i].gameplay.name;
                 if (!name) continue; 
@@ -145,7 +145,7 @@ socket.onmessage = (event) => {
                 if (data.tourney.ipcClients[i].gameplay.mods.str.includes('EZ')) {
                     score *= 1.75;
                 }
-
+                console.log("scores:",scores);
                 scores.push({ name: name, score: score });
             }
         }
@@ -162,7 +162,7 @@ socket.onmessage = (event) => {
         updateLeaderboard();
     }
 
-    // Simulate end of map for demonstration
+
     onMapEnd();
 };
 
@@ -171,4 +171,3 @@ function onMapEnd() {
     const lowestScoringPlayer = getMinPlayer();
     console.log("Lowest Scoring Player:", lowestScoringPlayer);
 }
-            
