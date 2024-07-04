@@ -171,3 +171,4 @@ function onMapEnd() {
     const lowestScoringPlayer = getMinPlayer();
     console.log("Lowest Scoring Player:", lowestScoringPlayer);
 }
+            
