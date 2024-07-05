@@ -88,8 +88,18 @@ socket.onerror = (error) => {
 const leaderboard = new PriorityQueue();
 const playerElements = {};
 const playerScoreElements = {};
+const playerHeartStatus = {}; 
 let currentPlayerCount = 0;
 let ready = false;
+
+function saveHeartStatus(playerName, heartStatus) {
+    localStorage.setItem(`hearts-${playerName}`, JSON.stringify(heartStatus));
+}
+
+function loadHeartStatus(playerName) {
+    const heartStatus = localStorage.getItem(`hearts-${playerName}`);
+    return heartStatus ? JSON.parse(heartStatus) : [true, true, true];
+}
 
 function initializeLeaderboard(players) {
     const leaderboardElement = document.getElementById('leaderboard');
@@ -98,16 +108,48 @@ function initializeLeaderboard(players) {
     leaderboard.heap = [];  
     players.forEach(player => {
         leaderboard.insert(player);
+
         const playerElement = document.createElement('li');
-        const playerScoreElement = document.createElement('div');
         playerElement.className = 'player';
-        playerScoreElement.className = 'score';
         playerElement.id = `player-${player.name}`;
+
+        const playerImgElement = document.createElement('img');
+        playerImgElement.src = `https://a.ppy.sh/${player.userId}`; 
+        playerImgElement.alt = `${player.name}'s profile picture`;
+
+        const playerNameElement = document.createElement('span');
+        playerNameElement.textContent = `${player.name}`;
+        
+        const playerScoreElement = document.createElement('div');
+        playerScoreElement.className = 'score';
         playerScoreElement.id = `player-${player.name}-score`;
-        playerElement.textContent = `${player.name}`;
         playerScoreElement.textContent = `${player.score}`;
-        leaderboardElement.appendChild(playerElement);
+
+        
+        const heartsContainer = document.createElement('div');
+        heartsContainer.className = 'hearts-container';
+        const heartStatus = loadHeartStatus(player.name); 
+        playerHeartStatus[player.name] = heartStatus;
+
+        for (let i = 0; i < 3; i++) {
+            const heart = document.createElement('span');
+            heart.className = heartStatus[i] ? 'heart enabled' : 'heart disabled'; 
+            heart.innerHTML = '♥';
+            heart.addEventListener('click', () => {
+                heartStatus[i] = !heartStatus[i]; 
+                heart.classList.toggle('enabled');
+                heart.classList.toggle('disabled');
+                saveHeartStatus(player.name, heartStatus); 
+            });
+            heartsContainer.appendChild(heart);
+        }
+
+        playerElement.appendChild(playerImgElement);
+        playerElement.appendChild(playerNameElement);
         playerElement.appendChild(playerScoreElement);
+        playerElement.appendChild(heartsContainer); 
+        leaderboardElement.appendChild(playerElement);
+
         playerElements[player.name] = playerElement;
         playerScoreElements[player.name] = playerScoreElement;
     });
@@ -120,10 +162,8 @@ function updateLeaderboard() {
     sortedPlayers.forEach(player => {
         const playerElement = playerElements[player.name];
         const playerScoreElement = playerScoreElements[player.name];
-        playerElement.textContent = `${player.name}`;
         playerScoreElement.textContent = `${player.score}`;
         leaderboardElement.appendChild(playerElement);
-        playerElement.appendChild(playerScoreElement);
     });
 }
 
@@ -139,14 +179,14 @@ socket.onmessage = (event) => {
         for (let i = 0; i < 8; i++) {
             if (data.tourney.ipcClients[i]) {
                 let name = data.tourney.ipcClients[i].gameplay.name;
-                if (!name) continue; 
+                let userId = data.tourney.ipcClients[i].spectating.userID;
+                if (!name) continue;
 
                 let score = data.tourney.ipcClients[i].gameplay.score;
                 if (data.tourney.ipcClients[i].gameplay.mods.str.includes('EZ')) {
                     score *= 1.75;
                 }
-                console.log("scores:",scores);
-                scores.push({ name: name, score: score });
+                scores.push({ name: name, score: score, userId: userId });
             }
         }
     }
@@ -162,10 +202,8 @@ socket.onmessage = (event) => {
         updateLeaderboard();
     }
 
-
     onMapEnd();
 };
-
 
 function onMapEnd() {
     const lowestScoringPlayer = getMinPlayer();

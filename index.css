@@ -1,7 +1,7 @@
 @font-face {
     font-family: "Oduda";
     src: url(./fonts/Oduda-Bold.otf);
-} 
+}
 
 body {
     font-family: "Oduda";
@@ -9,7 +9,9 @@ body {
 
 ul {
     list-style: none;
-    max-width: 200px;
+    width: fit-content;
+    padding: 0;
+    margin: 0;
 }
 
 #leaderboard {
@@ -17,19 +19,50 @@ ul {
     padding: 0;
 }
 
-.player{
+.player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     transform: translateY(-2px);
-    transition-property: all;
-    transition: 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
     padding: 10px;
     color: #fb9db6;
-    /*background-color: #f6e8e3;*/
     background-image: linear-gradient(to right, #f6e8e3ff, #fb9db6aa);
     border-top: #fff8f6 solid 2px;
     border-bottom: #d0a493 solid 2px;
     border-radius: 0px 35px 35px 0px;
 }
 
-.score{
-    color: #975f6e
+.player img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.player span, .player div {
+    margin-right: 10px;
+}
+
+.score {
+    color: #975f6e;
+}
+
+.hearts-container {
+    display: flex;
+    gap: 5px;
+}
+
+.heart {
+    cursor: pointer;
+    font-size: 20px;
+    transition: color 0.2s ease-in-out;
+}
+
+.heart.enabled {
+    color: red; 
+}
+
+.heart.disabled {
+    color: grey; 
 }
