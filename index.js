@@ -75,7 +75,7 @@ class PriorityQueue {
 let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
 
 socket.onopen = () => {
-    console.log("api v2 connected");
+    console.log("api connected");
 };
 socket.onclose = (event) => {
     console.log("Socket Closed Connection: ", event);
@@ -124,6 +124,7 @@ function initializeLeaderboard(players) {
         playerScoreElement.className = 'score';
         playerScoreElement.id = `player-${player.name}-score`;
         playerScoreElement.textContent = `${player.score}`;
+        const playerScoreCount = new CountUp(`player-${player.name}-score`, 0, 0, 0, .3, { useEasing: true, useGrouping: true, separator: ',', decimal: '.', suffix: '' })
 
         
         const heartsContainer = document.createElement('div');
@@ -134,7 +135,7 @@ function initializeLeaderboard(players) {
         for (let i = 0; i < 3; i++) {
             const heart = document.createElement('span');
             heart.className = heartStatus[i] ? 'heart enabled' : 'heart disabled'; 
-            heart.innerHTML = '♥';
+            heart.innerHTML = '❤';
             heart.addEventListener('click', () => {
                 heartStatus[i] = !heartStatus[i]; 
                 heart.classList.toggle('enabled');
@@ -146,12 +147,13 @@ function initializeLeaderboard(players) {
 
         playerElement.appendChild(playerImgElement);
         playerElement.appendChild(playerNameElement);
-        playerElement.appendChild(playerScoreElement);
-        playerElement.appendChild(heartsContainer); 
+        playerNameElement.appendChild(playerScoreElement);
+        playerNameElement.appendChild(heartsContainer); 
         leaderboardElement.appendChild(playerElement);
 
         playerElements[player.name] = playerElement;
-        playerScoreElements[player.name] = playerScoreElement;
+        // playerScoreElements[player.name] = playerScoreElement;
+        playerScoreElements[player.name] = playerScoreCount;
     });
 }
 
@@ -162,7 +164,8 @@ function updateLeaderboard() {
     sortedPlayers.forEach(player => {
         const playerElement = playerElements[player.name];
         const playerScoreElement = playerScoreElements[player.name];
-        playerScoreElement.textContent = `${player.score}`;
+        // playerScoreElement.textContent = `${player.score}`;
+        playerScoreElement.update(player.score);
         leaderboardElement.appendChild(playerElement);
     });
 }
@@ -170,6 +173,7 @@ function updateLeaderboard() {
 function getMinPlayer() {
     return leaderboard.getMin();
 }
+
 
 socket.onmessage = (event) => {
     let data = JSON.parse(event.data);

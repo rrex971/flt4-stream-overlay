@@ -27,16 +27,16 @@ ul {
     transition: all 0.2s ease-in-out;
     padding: 10px;
     color: #fb9db6;
-    background-image: linear-gradient(to right, #f6e8e3ff, #fb9db6aa);
+    background-image: linear-gradient(to left, #f6e8e3ff, #fb9db6aa);
     border-top: #fff8f6 solid 2px;
     border-bottom: #d0a493 solid 2px;
     border-radius: 0px 35px 35px 0px;
 }
 
 .player img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border-radius: 30%;
     margin-right: 10px;
 }
 
@@ -60,9 +60,9 @@ ul {
 }
 
 .heart.enabled {
-    color: red; 
+    color: #ff645c; 
 }
 
 .heart.disabled {
-    color: grey; 
+    color: #B18787; 
 }
