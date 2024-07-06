@@ -174,7 +174,7 @@ function getMinPlayer() {
 
 function reduceHeart(playerName) {
     const heartStatus = loadHeartStatus(playerName);
-    for (let i = 0; i < heartStatus.length; i++) {
+    for (let i = heartStatus.length - 1; i >= 0; i--) { 
         if (heartStatus[i]) {
             heartStatus[i] = false;
             saveHeartStatus(playerName, heartStatus);
@@ -187,6 +187,7 @@ function reduceHeart(playerName) {
         }
     }
 }
+
 
 function getStoredMapState() {
     return JSON.parse(localStorage.getItem('mapState')) || { stars: null, mapEnded: false };
