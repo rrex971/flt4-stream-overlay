@@ -75,7 +75,7 @@ class PriorityQueue {
 let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
 
 socket.onopen = () => {
-    console.log("api connected");
+    console.log("API connected");
 };
 socket.onclose = (event) => {
     console.log("Socket Closed Connection: ", event);
@@ -152,7 +152,6 @@ function initializeLeaderboard(players) {
         leaderboardElement.appendChild(playerElement);
 
         playerElements[player.name] = playerElement;
-        // playerScoreElements[player.name] = playerScoreElement;
         playerScoreElements[player.name] = playerScoreCount;
     });
 }
@@ -164,7 +163,6 @@ function updateLeaderboard() {
     sortedPlayers.forEach(player => {
         const playerElement = playerElements[player.name];
         const playerScoreElement = playerScoreElements[player.name];
-        // playerScoreElement.textContent = `${player.score}`;
         playerScoreElement.update(player.score);
         leaderboardElement.appendChild(playerElement);
     });
@@ -174,10 +172,37 @@ function getMinPlayer() {
     return leaderboard.getMin();
 }
 
+function reduceHeart(playerName) {
+    const heartStatus = loadHeartStatus(playerName);
+    for (let i = 0; i < heartStatus.length; i++) {
+        if (heartStatus[i]) {
+            heartStatus[i] = false;
+            saveHeartStatus(playerName, heartStatus);
+
+            const heartsContainer = playerElements[playerName].querySelector('.hearts-container');
+            const heartElements = heartsContainer.querySelectorAll('.heart');
+            heartElements[i].classList.remove('enabled');
+            heartElements[i].classList.add('disabled');
+            break;
+        }
+    }
+}
+
+function getStoredMapState() {
+    return JSON.parse(localStorage.getItem('mapState')) || { stars: null, mapEnded: false };
+}
+
+function setStoredMapState(stars, mapEnded) {
+    localStorage.setItem('mapState', JSON.stringify({ stars, mapEnded }));
+}
 
 socket.onmessage = (event) => {
     let data = JSON.parse(event.data);
     const scores = [];
+    let currentStars = data.tourney.manager.stars.right + data.tourney.manager.stars.left;
+    const storedMapState = getStoredMapState();
+
+    console.log("Stars: ", currentStars);
 
     if (data.tourney && data.tourney.ipcClients) {
         for (let i = 0; i < 8; i++) {
@@ -206,10 +231,22 @@ socket.onmessage = (event) => {
         updateLeaderboard();
     }
 
-    onMapEnd();
+    let mapOngoing = (storedMapState.stars === currentStars);
+    console.log("Map Status:", mapOngoing ? "Map Ongoing" : "Map Ended");
+
+    if (!mapOngoing) {
+        if (!storedMapState.mapEnded) {
+            setStoredMapState(currentStars, true);
+            onMapEnd();
+        }
+    } else {
+        setStoredMapState(currentStars, false);
+    }
 };
 
 function onMapEnd() {
     const lowestScoringPlayer = getMinPlayer();
     console.log("Lowest Scoring Player:", lowestScoringPlayer);
+    localStorage.setItem("Lowest Score", lowestScoringPlayer.name);
+    reduceHeart(lowestScoringPlayer.name);
 }
