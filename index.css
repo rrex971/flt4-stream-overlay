@@ -27,9 +27,8 @@ ul {
     transition: all 0.2s ease-in-out;
     padding: 10px;
     color: #fb9db6;
-    background-image: linear-gradient(to left, #f6e8e3ff, #fb9db6aa);
-    border-top: #fff8f6 solid 2px;
-    border-bottom: #d0a493 solid 2px;
+    background-color: #f6e8e3ff;
+    border-bottom: #d0a493 solid 3px;
     border-radius: 0px 35px 35px 0px;
 }
 
