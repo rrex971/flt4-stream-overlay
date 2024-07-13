@@ -98,7 +98,7 @@ function saveHeartStatus(playerName, heartStatus) {
 
 function loadHeartStatus(playerName) {
     const heartStatus = localStorage.getItem(`hearts-${playerName}`);
-    return heartStatus ? JSON.parse(heartStatus) : [true, true, true];
+    return heartStatus ? JSON.parse(heartStatus) : [true, true];
 }
 
 function initializeLeaderboard(players) {
@@ -108,7 +108,6 @@ function initializeLeaderboard(players) {
     leaderboard.heap = [];  
     players.forEach(player => {
         leaderboard.insert(player);
-
         const playerElement = document.createElement('li');
         playerElement.className = 'player';
         playerElement.id = `player-${player.name}`;
@@ -132,7 +131,7 @@ function initializeLeaderboard(players) {
         const heartStatus = loadHeartStatus(player.name); 
         playerHeartStatus[player.name] = heartStatus;
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
             const heart = document.createElement('span');
             heart.className = heartStatus[i] ? 'heart enabled' : 'heart disabled'; 
             heart.innerHTML = '❤';
@@ -187,7 +186,6 @@ function reduceHeart(playerName) {
         }
     }
 }
-
 
 function getStoredMapState() {
     return JSON.parse(localStorage.getItem('mapState')) || { stars: null, mapEnded: false };
