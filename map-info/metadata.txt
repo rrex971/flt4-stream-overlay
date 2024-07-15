@@ -1,0 +1,6 @@
+Usecase: ingame, obs-overlay
+Name: flt4-map-info
+Author: rrex
+CompatibleWith: gosu, tosu
+Resolution: 1200x124
+authorLinks: https://github.com/rrex971

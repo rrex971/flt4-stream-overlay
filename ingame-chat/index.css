@@ -1,0 +1,77 @@
+@font-face {
+    font-family: "TorusProSB";
+    font-weight: 400;
+    src: url(../fonts/TorusPro-SemiBold.ttf);
+}
+@font-face {
+    font-family: "TorusProB";
+    src: url(../fonts/TorusPro-Bold.ttf);
+}
+body {
+    font-family: TorusProSB;
+    font-weight: 300;
+}
+#chat {
+    max-width: 700px;
+    font-size: 20px;
+    max-height: 150px;
+    overflow-y: hidden; 
+    overflow-x: hidden;
+    background-color: #f6e8e3ff;
+    padding: 0px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+#chat::before {
+    content: '';
+    display: block;
+    height: 150px;
+    position: absolute;
+    top: -200px;
+    left: 0;
+    right: 0;
+    background-color: #f6e8e3ff;
+}
+.message {
+    max-width: 700px;
+    margin-top: 1px;
+    padding: 5px 10px 5px 15px;
+    margin-bottom: 0px;
+    border-radius: 25px;
+    /*border-bottom: #d0a493 2px solid;*/
+    display: flex;
+    flex-direction: row;
+    opacity: 1;
+}
+.name {
+    color: #be76b5;
+    font-family: TorusProB;
+    margin-bottom: 1px;
+}
+
+.name.ref{
+    color: #f86158;
+}
+.body {
+    color: #6e5248;
+    margin-left: 10px;
+    overflow-wrap: break-word;
+}
+
+
+
+.new-message {
+    opacity: 0;
+}
+
+.new-message:last-child {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}

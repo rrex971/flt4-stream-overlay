@@ -1,0 +1,139 @@
+@font-face {
+    font-family: "Oduda";
+    src: url(../../fonts/Oduda-Bold.otf);
+}
+body,html{
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+#main{
+    font-size: 50px;
+    font-family: Oduda, Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    color: #8d776f;
+    height: 200px;
+    width: 1600px;
+    position: relative;
+}
+#target{
+    position: relative;
+    height: 200px;
+    width: 1600px;
+    -webkit-mask-image: url(../static/mask.svg);
+    mask-image: url(../static/mask.svg);
+
+}
+#bg{
+    background-color: rgb(71, 83, 109);
+    position: absolute;
+    height: 200px;
+    border-radius: 50px;
+    width: 300px;
+    object-fit: cover;
+    z-index: 0;
+}
+
+#bgDark{
+    position: absolute;
+    height: 200px;
+    width: 300px;
+    border-radius: 50px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#mainContainer{
+    width: 1600px;
+    height: 200px;
+    background-color: #f6e8e3;
+    z-index: -10;
+}
+#title{
+    font-size: 40px;
+    position: absolute;
+    top: 10px;
+    width: max-content;
+    max-width: 1000px;
+    max-height: 50px;
+    overflow:hidden;
+    left: 335px;
+    /*transform: translate(700px);*/
+    /*animation: slide 15s linear infinite;*/
+}
+/*
+@keyframes slide {
+    0% {transform: translate(830px);}
+    100% { transform: translate(-100%);; }
+}
+    */
+#mapStatus{
+    left: 320px;
+    font-size: 25px;
+    position: absolute;
+    bottom: 0px;
+    display: flex;
+    justify-content: space-around;
+    width: 800px;
+    text-align: center;
+}
+
+#info {
+    display: flex;
+    color:#bc9f95;
+    font-size: 30px;
+    position: absolute;
+    left: 335px;
+    top: 60px;
+}
+
+#difficulty{
+    padding-left: 100px;
+}
+#mapStatus hr{
+    height: 10px;
+    width: 50px;
+    border-radius: 10px;
+    border: none;
+}
+.status span.odometer-value, .status {
+    line-height: 20px;
+    width: calc(max-content + 100px);
+}
+#cs hr {
+    background-color: #f89bb7;
+}
+#ar hr{
+    background-color: #f86158;
+}
+#od hr{
+    background-color: #f99658;
+}
+#hp hr{
+    background-color: #f8d062;
+}
+#bpm hr{
+    background-color: #37997d;
+}
+#sr hr{
+    background-color: #71a6d2;
+}
+#mods{
+    position: absolute;
+    width: 1530px;
+    margin-right: 120px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+}
+.mod img{
+    position: relative;
+    height: 100px;
+    width: 175px;
+    z-index: 1;
+    object-fit: cover;
+    margin-right: -25px;
+}
+.text{
+    display: flex;
+    justify-content: center;
+}
